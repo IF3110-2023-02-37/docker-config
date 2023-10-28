@@ -1,80 +1,33 @@
-version: "3.9"
 services:
-  postgres:
-    image: postgres:latest
-    container_name: postgres
-    hostname: postgres
-    ports:
-      - 5432:5432
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: Todo
-    volumes:
-      - postgres-data:/var/lib/postgresql/data
-    restart: unless-stopped
-
-  pgadmin:
-    image: dpage/pgadmin4
-    container_name: pgadmin
-    depends_on:
-      - postgres
-    ports:
-      - "5555:80"
-    environment:
-      PGADMIN_DEFAULT_EMAIL: pgadmin4@pgadmin.org
-      PGADMIN_DEFAULT_PASSWORD: admin
-    volumes:
-      - pgadmin-data:/var/lib/pgadmin
-    restart: unless-stopped
-
-  prisma-postgres-api:
-    stdin_open: true
-    build:
-      context: ../premium-REST
-      dockerfile: Dockerfile
-    container_name: prisma-postgres-api
-    depends_on:
-      - postgres
-    ports:
-      - "3000:3000"
-    restart: always
+  base-app:
+    extends:
+      file: ../base-app/docker-compose.yml
+      service: base-app
   
-  web:
-    build:
-      context: ../base-app
-      dockerfile: Dockerfile
-    depends_on:
-      - db
-    image: tubess:8.0-apache
-    ports:
-      - 80:80
-    volumes:
-      - .:/var/www/html
-  db:
-    container_name: db
-    image: mysql
-    restart: always
-    environment:
-        MYSQL_ROOT_PASSWORD: doraemon123
-        MYSQL_DATABASE: sample_db
-        MYSQL_USER: admin
-        MYSQL_PASSWORD: admin123
-    volumes:
-        - ./Database/sample_db.sql:/docker-entrypoint-initdb.d/schema.sql:ro
-    ports:
-        - "9906:3306"
+  base-app-db:
+    extends:
+      file: ../base-app/docker-compose.yml
+      service: base-app-db
+  
+  base-app-phpmyadmin:
+    extends: 
+      file: ../base-app/docker-compose.yml
+      service: base-app-phpmyadmin
 
-  phpmyadmin:
-    image: phpmyadmin/phpmyadmin
-    ports:
-        - '8008:80'
-    restart: always
-    environment:
-        PMA_HOST: db
-        UPLOAD_IMAGE : 300M
-    depends_on:
-        - db
+  premium-rest-postgres:
+    extends:
+      file: ../premium-rest/docker-compose.yml
+      service: premium-rest-postgres
+    
+  premium-rest-pgadmin:
+    extends:
+      file: ../premium-rest/docker-compose.yml
+      service: premium-rest-pgadmin
+
+  premium-rest-api:
+    extends:
+      file: ../premium-rest/docker-compose.yml
+      service: prisma-postgres-api
 
 volumes:
   postgres-data:
