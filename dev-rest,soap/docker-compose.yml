@@ -1,0 +1,35 @@
+services:
+  soap-mysql:
+    extends:
+      file: ../../premium-soap/docker-compose.yml
+      service: soap-mysql
+  
+  soap:
+    extends:
+      file: ../../premium-soap/docker-compose.yml
+      service: soap
+  
+  soap-phpmyadmin:
+    extends:
+      file: ../../premium-soap/docker-compose.yml
+      service: soap-phpmyadmin
+
+  postgres:
+    extends:
+      file: ../../premium-rest/docker-compose.yml
+      service: postgres
+  
+  premium-rest-pgadmin:
+    extends:
+      file: ../../premium-rest/docker-compose.yml
+      service: premium-rest-pgadmin
+  
+  prisma-postgres-api:
+    extends:
+      file: ../../premium-rest/docker-compose.yml
+      service: prisma-postgres-api
+
+volumes:
+  mysql-data:
+  postgres-data:
+  pgadmin-data:
