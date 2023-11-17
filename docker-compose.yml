@@ -29,6 +29,27 @@ services:
       file: ../premium-rest/docker-compose.yml
       service: prisma-postgres-api
 
+  soap-mysql:
+    extends:
+      file: ../premium-soap/docker-compose.yml
+      service: soap-mysql
+  
+  soap:
+    extends:
+      file: ../premium-soap/docker-compose.yml
+      service: soap
+  
+  soap-phpmyadmin:
+    extends:
+      file: ../premium-soap/docker-compose.yml
+      service: soap-phpmyadmin
+
+  react:
+    extends:
+      file: ../premium-app/docker-compose.yml
+      service: react
+
 volumes:
+  mysql-data:
   postgres-data:
   pgadmin-data:
